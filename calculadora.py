@@ -81,49 +81,56 @@ def apagar_um():
         visor.delete(len(texto) - 1, tk.END)
 
 def igual():
-    expressao = visor.get().replace("×", "*").replace("÷", "/")
 
-    try:
-        if not re.fullmatch(r"\d+(\.\d+)?([+\-*/]\d+(\.\d+)?)*", expressao):
-            raise ValueError
+    expressao = visor.get().replace("×", "*").replace("÷", "/").replace(" ", "")
 
-        partes = re.split(r"([+\-*/])", expressao)
+    if expressao.startswith("-"):
+        expressao = "0" + expressao
 
-        resultado = 0
-        numero = float(partes[0])
-
-        for i in range(1, len(partes), 2):
-            operador = partes[i]
-            proximo = float(partes[i + 1])
-
-            if operador == "*":
-                numero *= proximo
-
-            elif operador == "/":
-                numero /= proximo
-
-            else:
-                resultado += numero
-                numero = proximo if operador == "+" else -proximo
-
-        resultado += numero
-        resultado = round(resultado, 10)
-
-        # Remove o .0 dos números inteiros
-        if resultado == int(resultado):
-            resultado = int(resultado)
-
-        visor.delete(0, tk.END)
-        visor.insert(0, str(resultado))
-
-    except ZeroDivisionError:
-        visor.delete(0, tk.END)
-        visor.insert(0, "Erro! Divisão por zero.")
-
-    except:
+    if not re.fullmatch(r"\d+(\.\d+)?([+\-*/]\d+(\.\d+)?)*", expressao):
         visor.delete(0, tk.END)
         visor.insert(0, "Erro")
+        return
 
+    partes = re.split(r"([+\-*/])", expressao)
+
+    soma = 0                    # total dos termos que já estão prontos
+    termo = float(partes[0])    # termo atual (pode receber * e /)
+    sinal = "+"                 # sinal que vem antes do termo atual
+
+    for i in range(1, len(partes), 2):
+        operador = partes[i]
+        numero = float(partes[i + 1])
+
+        if operador == "*":
+            termo = termo * numero
+
+        elif operador == "/":
+            if numero == 0:
+                visor.delete(0, tk.END)
+                visor.insert(0, "Erro! Divisão por zero.")
+                return
+            termo = termo / numero
+
+        else: 
+            if sinal == "+":
+                soma = soma + termo
+            else:
+                soma = soma - termo
+            sinal = operador
+            termo = numero
+
+    if sinal == "+":
+        soma = soma + termo
+    else:
+        soma = soma - termo
+
+    soma = round(soma, 10)
+    if soma == int(soma):
+        soma = int(soma)
+
+    visor.delete(0, tk.END)
+    visor.insert(0, str(soma))
 
 visor = tk.Entry(janela, justify="right", font=("Comic Sans MS", 28, "bold"), bg="white", fg=TEXTO, bd=0)
 

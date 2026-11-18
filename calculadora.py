@@ -1,5 +1,7 @@
 import tkinter as tk
 
+import re
+
 ROSA_FUNDO = "#FFD6E8"
 ROSA_NUMERO = "#FFB3D1"
 ROSA_OPERADOR = "#FF8CBE"
@@ -82,43 +84,32 @@ def igual():
     expressao = visor.get().replace("×", "*").replace("÷", "/")
 
     try:
-        numeros = []
-        operadores = []
-        numero = ""
+        if not re.fullmatch(r"\d+(\.\d+)?([+\-*/]\d+(\.\d+)?)*", expressao):
+            raise ValueError
 
-        for caractere in expressao:
-            if caractere.isdigit() or caractere == ".":
-                numero += caractere
+        partes = re.split(r"([+\-*/])", expressao)
+
+        resultado = 0
+        numero = float(partes[0])
+
+        for i in range(1, len(partes), 2):
+            operador = partes[i]
+            proximo = float(partes[i + 1])
+
+            if operador == "*":
+                numero *= proximo
+
+            elif operador == "/":
+                numero /= proximo
+
             else:
-                numeros.append(float(numero))
-                numero = ""
-                operadores.append(caractere)
+                resultado += numero
+                numero = proximo if operador == "+" else -proximo
 
-        numeros.append(float(numero))
-
-        i = 0
-        while i < len(operadores):
-            if operadores[i] == "*":
-                numeros[i] *= numeros[i + 1]
-            elif operadores[i] == "/":
-                numeros[i] /= numeros[i + 1]
-            else:
-                i += 1
-                continue
-
-            numeros.pop(i + 1)
-            operadores.pop(i)
-
-        resultado = numeros[0]
-
-        for i in range(len(operadores)):
-            if operadores[i] == "+":
-                resultado += numeros[i + 1]
-            else:
-                resultado -= numeros[i + 1]
-
+        resultado += numero
         resultado = round(resultado, 10)
 
+        # Remove o .0 dos números inteiros
         if resultado == int(resultado):
             resultado = int(resultado)
 

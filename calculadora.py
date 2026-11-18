@@ -40,9 +40,14 @@ def digitar_6(): visor.insert(tk.END, "6")
 def digitar_7(): visor.insert(tk.END, "7")
 def digitar_8(): visor.insert(tk.END, "8")
 def digitar_9(): visor.insert(tk.END, "9")
-def digitar_ponto(): visor.insert(tk.END, ".")
 
+def digitar_ponto():
+    if visor.get() == "":
+        visor.insert(tk.END, "0.")
 
+    else:
+        visor.insert(tk.END, ".")
+        
 # Escolher a operação
 def calcular(sinal):
     global numero1, operador

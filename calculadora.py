@@ -25,112 +25,97 @@ for linha in range(1, 6):
     janela.rowconfigure(linha, weight=1, uniform="linhas", minsize=80)
 
 
-def digitar_0():
-    visor.insert(tk.END, "0")
+numero1 = 0
+operador = ""
 
-def digitar_1():
-    visor.insert(tk.END, "1")
 
-def digitar_2():
-    visor.insert(tk.END, "2")
+# Digitar números
+def digitar_0(): visor.insert(tk.END, "0")
+def digitar_1(): visor.insert(tk.END, "1")
+def digitar_2(): visor.insert(tk.END, "2")
+def digitar_3(): visor.insert(tk.END, "3")
+def digitar_4(): visor.insert(tk.END, "4")
+def digitar_5(): visor.insert(tk.END, "5")
+def digitar_6(): visor.insert(tk.END, "6")
+def digitar_7(): visor.insert(tk.END, "7")
+def digitar_8(): visor.insert(tk.END, "8")
+def digitar_9(): visor.insert(tk.END, "9")
+def digitar_ponto(): visor.insert(tk.END, ".")
 
-def digitar_3():
-    visor.insert(tk.END, "3")
 
-def digitar_4():
-    visor.insert(tk.END, "4")
+# Escolher a operação
+def calcular(sinal):
+    global numero1, operador
 
-def digitar_5():
-    visor.insert(tk.END, "5")
+    numero1 = float(visor.get())
+    operador = sinal
 
-def digitar_6():
-    visor.insert(tk.END, "6")
-
-def digitar_7():
-    visor.insert(tk.END, "7")
-
-def digitar_8():
-    visor.insert(tk.END, "8")
-
-def digitar_9():
-    visor.insert(tk.END, "9")
-
-def digitar_ponto():
-    visor.insert(tk.END, ".")
+    visor.delete(0, tk.END)
 
 
 def digitar_mais():
-    visor.insert(tk.END, "+")
+    calcular("+")
 
 def digitar_menos():
-    visor.insert(tk.END, "-")
+    calcular("-")
 
 def digitar_multiplicacao():
-    visor.insert(tk.END, "×")
+    calcular("*")
 
 def digitar_divisao():
-    visor.insert(tk.END, "÷")
+    calcular("/")
 
 
+# Mostrar o resultado
+def igual():
+    global numero1, operador
+
+    if visor.get() == "" or operador == "":
+        return
+
+    numero2 = float(visor.get())
+
+    if operador == "+":
+        resultado = numero1 + numero2
+
+    elif operador == "-":
+        resultado = numero1 - numero2
+
+    elif operador == "*":
+        resultado = numero1 * numero2
+
+    elif operador == "/":
+        if numero2 == 0:
+            visor.delete(0, tk.END)
+            visor.insert(0, "Erro, divisão por zero!")
+            return
+        resultado = numero1 / numero2
+
+    if resultado == int(resultado):
+        resultado = int(resultado)
+
+    visor.delete(0, tk.END)
+    visor.insert(0, str(resultado))
+
+    operador = ""
+
+
+# Limpar tudo
 def limpar():
+    global numero1, operador
+
+    numero1 = 0
+    operador = ""
     visor.delete(0, tk.END)
 
+
+# Apagar último número
 def apagar_um():
     texto = visor.get()
+
     if texto:
         visor.delete(len(texto) - 1, tk.END)
 
-def igual():
-
-    expressao = visor.get().replace("×", "*").replace("÷", "/").replace(" ", "")
-
-    if expressao.startswith("-"):
-        expressao = "0" + expressao
-
-    if not re.fullmatch(r"\d+(\.\d+)?([+\-*/]\d+(\.\d+)?)*", expressao):
-        visor.delete(0, tk.END)
-        visor.insert(0, "Erro")
-        return
-
-    partes = re.split(r"([+\-*/])", expressao)
-
-    soma = 0                    # total dos termos que já estão prontos
-    termo = float(partes[0])    # termo atual (pode receber * e /)
-    sinal = "+"                 # sinal que vem antes do termo atual
-
-    for i in range(1, len(partes), 2):
-        operador = partes[i]
-        numero = float(partes[i + 1])
-
-        if operador == "*":
-            termo = termo * numero
-
-        elif operador == "/":
-            if numero == 0:
-                visor.delete(0, tk.END)
-                visor.insert(0, "Erro! Divisão por zero.")
-                return
-            termo = termo / numero
-
-        else: 
-            if sinal == "+":
-                soma = soma + termo
-            else:
-                soma = soma - termo
-            sinal = operador
-            termo = numero
-
-    if sinal == "+":
-        soma = soma + termo
-    else:
-        soma = soma - termo
-
-    soma = round(soma, 10)
-    if soma == int(soma):
-        soma = int(soma)
-
-    visor.delete(0, tk.END)
-    visor.insert(0, str(soma))
 
 visor = tk.Entry(janela, justify="right", font=("Comic Sans MS", 28, "bold"), bg="white", fg=TEXTO, bd=0)
 

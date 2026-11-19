@@ -1,4 +1,3 @@
-
 import tkinter as tk
 
 
@@ -27,77 +26,126 @@ for linha in range(1, 6):
 
 numero1 = 0
 operador = ""
+erro = False
 
 
 # Digitar números
 def digitar_0():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "0")
     visor.config(state="readonly")
 
 
 def digitar_1():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "1")
     visor.config(state="readonly")
 
 
 def digitar_2():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "2")
     visor.config(state="readonly")
 
 
 def digitar_3():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "3")
     visor.config(state="readonly")
 
 
 def digitar_4():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "4")
     visor.config(state="readonly")
 
 
 def digitar_5():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "5")
     visor.config(state="readonly")
 
 
 def digitar_6():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "6")
     visor.config(state="readonly")
 
 
 def digitar_7():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "7")
     visor.config(state="readonly")
 
 
 def digitar_8():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "8")
     visor.config(state="readonly")
 
 
 def digitar_9():
+    global erro
     visor.config(state="normal")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
     visor.insert(tk.END, "9")
     visor.config(state="readonly")
 
 
 def digitar_ponto():
+    global erro
+
     visor.config(state="normal")
 
-    if visor.get() == "":
-        visor.insert(tk.END, "0.")
+    if erro:
+        visor.delete(0, tk.END)
+        erro = False
 
-    else:
-        visor.insert(tk.END, ".")
+    if "." not in visor.get():
+
+        if visor.get() == "":
+            visor.insert(tk.END, "0.")
+
+        else:
+            visor.insert(tk.END, ".")
 
     visor.config(state="readonly")
 
@@ -105,6 +153,12 @@ def digitar_ponto():
 # Escolher a operação
 def calcular(sinal):
     global numero1, operador
+
+    if operador != "":
+        return
+
+    if visor.get() == "":
+        return
 
     numero1 = float(visor.get())
     operador = sinal
@@ -132,7 +186,7 @@ def digitar_divisao():
 
 # Mostrar o resultado
 def igual():
-    global numero1, operador
+    global numero1, operador, erro
 
     if visor.get() == "" or operador == "":
         return
@@ -154,6 +208,9 @@ def igual():
             visor.delete(0, tk.END)
             visor.insert(0, "Erro, divisão por zero!")
             visor.config(state="readonly")
+
+            operador = ""
+            erro = True
             return
 
         resultado = numero1 / numero2
@@ -171,10 +228,11 @@ def igual():
 
 # Limpar tudo
 def limpar():
-    global numero1, operador
+    global numero1, operador, erro
 
     numero1 = 0
     operador = ""
+    erro = False
 
     visor.config(state="normal")
     visor.delete(0, tk.END)
@@ -183,6 +241,11 @@ def limpar():
 
 # Apagar último número
 def apagar_um():
+    global erro
+
+    if erro:
+        return
+
     texto = visor.get()
 
     if texto:
